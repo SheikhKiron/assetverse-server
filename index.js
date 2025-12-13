@@ -195,19 +195,19 @@ app.post('/auth/login', async (req, res) => {
 
 // ==================== HR: EMPLOYEES ====================
 
-// Approved employees list (HR-specific affiliated employees)
+
 app.get('/hr/employees', async (req, res) => {
   try {
     const { hrEmail } = req.query;
 
-    // যদি hrEmail দেয়া থাকে → শুধু ওই HR এর approved requests থেকে employees
+
     if (hrEmail) {
       const approvedReqs = await requestsCol
         .find({ hrEmail, requestStatus: 'approved' })
         .toArray();
 
       if (!approvedReqs.length) {
-        return res.send([]); // এখনও কেউ asset-approved না
+        return res.send([]); 
       }
 
       const emails = [...new Set(approvedReqs.map(r => r.requesterEmail))];
@@ -222,7 +222,7 @@ app.get('/hr/employees', async (req, res) => {
       return res.send(employees);
     }
 
-    // hrEmail না থাকলে fallback: globally approved employees
+ 
     const employees = await usersCol
       .find({ role: 'employee', approved: true })
       .toArray();
