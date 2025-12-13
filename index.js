@@ -16,6 +16,7 @@ app.use(express.json());
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // ===== MongoDB =====
+
 const client = new MongoClient(process.env.MONGO_URI);
 let db;
 await client.connect();
