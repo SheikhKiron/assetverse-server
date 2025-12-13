@@ -169,6 +169,7 @@ app.post('/auth/register/employee', async (req, res) => {
 });
 
 // Login (JWT)
+
 app.post('/auth/login', async (req, res) => {
   try {
     const { email, password } = req.body;
