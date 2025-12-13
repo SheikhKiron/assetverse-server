@@ -98,6 +98,7 @@ const verifyEmployee = (req, res, next) => {
 // ==================== AUTH ====================
 
 // HR Registration
+
 app.post('/auth/register/hr', async (req, res) => {
   try {
     const { name, email, password, companyName, companyLogo, dateOfBirth } =
