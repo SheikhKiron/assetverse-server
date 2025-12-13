@@ -318,6 +318,7 @@ app.get('/hr/assets', async (req, res) => {
 });
 
 // Get single asset by id
+
 app.get('/hr/assets/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -633,6 +634,7 @@ app.patch('/hr/requests/:id/reject', async (req, res) => {
 
 // ==================== PACKAGES & STRIPE UPGRADE ====================
 
+
 // Get all packages
 app.get('/packages', async (req, res) => {
   try {
@@ -743,7 +745,7 @@ app.get('/users/by-email/:email', async (req, res) => {
   }
 });
 
-// Employee profile (example)
+
 app.get(
   '/employee/my-profile',
   verifyToken,
