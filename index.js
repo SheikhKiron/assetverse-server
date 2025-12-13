@@ -234,6 +234,7 @@ app.get('/hr/employees', async (req, res) => {
 });
 
 // Pending employees (JWT protected)
+
 app.get('/hr/employees/pending', verifyToken, verifyHR, async (req, res) => {
   try {
     const employees = await usersCol
@@ -289,7 +290,7 @@ app.post('/hr/assets', async (req, res) => {
     const asset = {
       productName,
       productImage,
-      productType, // "Returnable" | "Non-returnable"
+      productType, 
       productQuantity: qty,
       availableQuantity: qty,
       dateAdded: new Date(),
@@ -411,7 +412,7 @@ app.post('/employee/requests', async (req, res) => {
       assetImage: assetImage || null,
       requestDate: new Date(),
       approvalDate: null,
-      requestStatus: 'pending', // pending | approved | rejected | returned
+      requestStatus: 'pending',
       note: note || '',
       processedBy: null,
     };
