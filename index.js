@@ -12,6 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 // ===== Stripe =====
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // ===== MongoDB =====
