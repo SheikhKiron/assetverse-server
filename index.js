@@ -135,6 +135,7 @@ app.post('/auth/register/hr', async (req, res) => {
 });
 
 // Employee Registration
+
 app.post('/auth/register/employee', async (req, res) => {
   try {
     const { name, email, password, dateOfBirth } = req.body;
