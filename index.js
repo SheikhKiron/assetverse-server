@@ -761,6 +761,111 @@ app.get(
   }
 );
 
+app.get('/hr/analytics/asset-types', async (req, res) => {
+  try {
+    const { hrEmail } = req.query;
+
+    const matchStage = {};
+    if (hrEmail) matchStage.hrEmail = hrEmail;
+
+    const agg = await assetsCol
+      .aggregate([
+        { $match: matchStage },
+        {
+          $group: {
+            _id: '$productType',
+            count: { $sum: 1 },
+          },
+        },
+      ])
+      .toArray();
+
+    let returnable = 0;
+    let nonReturnable = 0;
+
+    agg.forEach(item => {
+      if (item._id === 'Returnable') returnable = item.count;
+      else if (item._id === 'Non-returnable') nonReturnable = item.count;
+    });
+
+    const data = [
+      { name: 'Returnable', value: returnable },
+      { name: 'Non-returnable', value: nonReturnable },
+    ];
+
+    res.send(data);
+  } catch (err) {
+    console.error('Asset types analytics error:', err);
+    res.status(500).send({ msg: 'Server Error', error: err.toString() });
+  }
+});
+
+
+app.get('/hr/analytics/top-requested', async (req, res) => {
+  try {
+    const { hrEmail } = req.query;
+
+    const matchStage = {};
+    if (hrEmail) matchStage.hrEmail = hrEmail;
+
+    const agg = await requestsCol
+      .aggregate([
+        { $match: matchStage },
+        {
+          $group: {
+            _id: '$assetName',
+            count: { $sum: 1 },
+          },
+        },
+        { $sort: { count: -1 } },
+        { $limit: 5 },
+      ])
+      .toArray();
+
+    const data = agg.map(item => ({
+      assetName: item._id,
+      count: item.count,
+    }));
+
+    res.send(data);
+  } catch (err) {
+    console.error('Top requested analytics error:', err);
+    res.status(500).send({ msg: 'Server Error', error: err.toString() });
+  }
+});
+// pagination 
+app.get('/hr/assets', async (req, res) => {
+  try {
+    const { page = 1, limit = 10, hrEmail } = req.query;
+
+    const pageNum = Number(page) || 1;
+    const limitNum = Number(limit) || 10;
+    const skip = (pageNum - 1) * limitNum;
+
+    const query = {};
+    if (hrEmail) query.hrEmail = hrEmail; 
+    const total = await assetsCol.countDocuments(query);
+
+    const assets = await assetsCol
+      .find(query)
+      .sort({ dateAdded: -1 })
+      .skip(skip)
+      .limit(limitNum)
+      .toArray();
+
+    res.send({
+      data: assets,
+      total,
+      page: pageNum,
+      limit: limitNum,
+      totalPages: Math.ceil(total / limitNum) || 1,
+    });
+  } catch (err) {
+    console.error('Get assets error:', err);
+    res.status(500).send({ msg: 'Server Error', error: err.toString() });
+  }
+});
+
 // ==================== TEST ====================
 app.get('/', (req, res) => res.send('AssetVerse API Running'));
 
