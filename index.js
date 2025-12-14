@@ -307,15 +307,15 @@ app.post('/hr/assets', async (req, res) => {
 });
 
 // Get all assets
-app.get('/hr/assets', async (req, res) => {
-  try {
-    const assets = await assetsCol.find({}).toArray();
-    res.send(assets);
-  } catch (err) {
-    console.error('Get assets error:', err);
-    res.status(500).send({ msg: 'Server Error', error: err.toString() });
-  }
-});
+// app.get('/hr/assets', async (req, res) => {
+//   try {
+//     const assets = await assetsCol.find({}).toArray();
+//     res.send(assets);
+//   } catch (err) {
+//     console.error('Get assets error:', err);
+//     res.status(500).send({ msg: 'Server Error', error: err.toString() });
+//   }
+// });
 
 // Get single asset by id
 
@@ -833,17 +833,51 @@ app.get('/hr/analytics/top-requested', async (req, res) => {
     res.status(500).send({ msg: 'Server Error', error: err.toString() });
   }
 });
-// pagination 
+// pagination
+// app.get('/hr/assets', async (req, res) => {
+//   try {
+//     const { page = 1, limit = 10, hrEmail } = req.query;
+
+//     const pageNum = Number(page) || 1;
+//     const limitNum = Number(limit) || 10;
+//     const skip = (pageNum - 1) * limitNum;
+
+//     const query = {};
+//     if (hrEmail) query.hrEmail = hrEmail;
+//     const total = await assetsCol.countDocuments(query);
+
+//     const assets = await assetsCol
+//       .find(query)
+//       .sort({ dateAdded: -1 })
+//       .skip(skip)
+//       .limit(limitNum)
+//       .toArray();
+
+//     res.send({
+//       data: assets,
+//       total,
+//       page: pageNum,
+//       limit: limitNum,
+//       totalPages: Math.ceil(total / limitNum) || 1,
+//     });
+//   } catch (err) {
+//     console.error('Get assets error:', err);
+//     res.status(500).send({ msg: 'Server Error', error: err.toString() });
+//   }
+// });
+
+
 app.get('/hr/assets', async (req, res) => {
   try {
     const { page = 1, limit = 10, hrEmail } = req.query;
 
-    const pageNum = Number(page) || 1;
-    const limitNum = Number(limit) || 10;
+    const pageNum = Number(page);
+    const limitNum = Number(limit);
     const skip = (pageNum - 1) * limitNum;
 
     const query = {};
-    if (hrEmail) query.hrEmail = hrEmail; 
+    if (hrEmail) query.hrEmail = hrEmail;
+
     const total = await assetsCol.countDocuments(query);
 
     const assets = await assetsCol
@@ -858,13 +892,14 @@ app.get('/hr/assets', async (req, res) => {
       total,
       page: pageNum,
       limit: limitNum,
-      totalPages: Math.ceil(total / limitNum) || 1,
+      totalPages: Math.ceil(total / limitNum),
     });
   } catch (err) {
-    console.error('Get assets error:', err);
-    res.status(500).send({ msg: 'Server Error', error: err.toString() });
+    console.error(err);
+    res.status(500).send({ msg: 'Server Error' });
   }
 });
+
 
 // ==================== TEST ====================
 app.get('/', (req, res) => res.send('AssetVerse API Running'));
